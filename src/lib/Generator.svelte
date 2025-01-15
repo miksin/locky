@@ -45,14 +45,16 @@
 >
   <p class="prose prose-lg break-all font-mono">{pw}</p>
   <button
-    class={["btn btn-circle btn-xs", copied && "text-success"]}
+    class={["btn btn-circle btn-xs", copied && "hidden"]}
     onclick={handleCopy}
   >
-    {#if copied}
-      {@html checkIcon}
-    {:else}
-      {@html copyIcon}
-    {/if}
+    {@html copyIcon}
+  </button>
+  <button
+    class={["btn btn-circle btn-xs text-success", !copied && "hidden"]}
+    onclick={handleCopy}
+  >
+    {@html checkIcon}
   </button>
 </Card>
 
