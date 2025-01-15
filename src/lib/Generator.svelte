@@ -1,68 +1,102 @@
 <script lang="ts">
-  import { Charset, generate } from "./generate";
+  import Card from "./Card.svelte";
+  import { Charset, generate, type CharsetType } from "./generate";
+  import checkIcon from "../assets/check.svg?raw";
+  import copyIcon from "../assets/copy.svg?raw";
 
-  type Options = {
-    lowercase: boolean;
-    uppercase: boolean;
-    digits: boolean;
-    symbols: boolean;
+  type Option = {
+    type: CharsetType;
+    enabled: boolean;
   };
-  let options: Options = $state({
-    lowercase: true,
-    uppercase: true,
-    digits: true,
-    symbols: true,
-  });
+
+  let options: Option[] = $state([
+    { type: "Lowercase", enabled: true },
+    { type: "Uppercase", enabled: true },
+    { type: "Digits", enabled: true },
+    { type: "Symbols", enabled: true },
+  ]);
+
   let charsets: string[] = $derived(
-    [
-      options.lowercase ? Charset.Lowercase : "",
-      options.uppercase ? Charset.Uppercase : "",
-      options.digits ? Charset.Digits : "",
-      options.symbols ? Charset.Symbols : "",
-    ].filter((v) => v !== ""),
+    options.filter((o) => o.enabled).map((o) => Charset[o.type]),
   );
 
-  let pw = $state("");
-  const onClick = () => {
-    pw = generate(10, charsets);
+  let length = $state(10);
+  let pw = $state(
+    generate(10, [
+      Charset.Lowercase,
+      Charset.Uppercase,
+      Charset.Digits,
+      Charset.Symbols,
+    ]),
+  );
+  let copied = $state(false);
+  const handleGenerate = () => {
+    pw = generate(length, charsets);
+    copied = false;
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(pw);
+    copied = true;
   };
 </script>
 
-<div>
-  <p class="my-1 text-teal-400">{pw}</p>
-  <div>
-    <label>
+<Card
+  class="border-secondary flex flex-row items-center justify-between gap-2 rounded-b-none border-b-8 "
+>
+  <p class="prose prose-lg break-all font-mono">{pw}</p>
+  <button
+    class={["btn btn-circle btn-xs", copied && "text-success"]}
+    onclick={handleCopy}
+  >
+    {#if copied}
+      {@html checkIcon}
+    {:else}
+      {@html copyIcon}
+    {/if}
+  </button>
+</Card>
+
+<Card class="flex flex-col gap-2">
+  <label class="form-control">
+    <div class="label">
+      <span class="label-text">Password Length</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <p class="prose">{length}</p>
       <input
-        type="checkbox"
-        bind:checked={options.lowercase}
-        disabled={charsets.length === 1 && options.lowercase}
+        type="range"
+        min="1"
+        max="64"
+        bind:value={length}
+        class="range range-secondary"
       />
-      lowercase
-    </label>
-    <label>
+    </div>
+  </label>
+</Card>
+
+<Card class="flex flex-col gap-2">
+  {#each options as { type, enabled }}
+    <label class="label cursor-pointer gap-1">
+      <span class="label-text">{type}</span>
       <input
+        class="checkbox checkbox-secondary"
         type="checkbox"
-        bind:checked={options.uppercase}
-        disabled={charsets.length === 1 && options.uppercase}
+        checked={enabled}
+        onchange={() => {
+          options = options.map((o) => {
+            if (o.type === type) {
+              return { type, enabled: !enabled };
+            }
+            return o;
+          });
+        }}
+        disabled={charsets.length === 1 && enabled}
       />
-      uppercase
     </label>
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={options.digits}
-        disabled={charsets.length === 1 && options.digits}
-      />
-      digits
-    </label>
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={options.symbols}
-        disabled={charsets.length === 1 && options.symbols}
-      />
-      symbols
-    </label>
-  </div>
-  <button onclick={onClick}> generate </button>
-</div>
+  {/each}
+</Card>
+
+<button class="btn btn-primary shadow-lg" onclick={handleGenerate}>
+  generate
+</button>
