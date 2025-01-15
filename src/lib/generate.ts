@@ -6,6 +6,9 @@ export const Charset = {
 } as const;
 export type CharsetType = keyof typeof Charset;
 
+export const defaultLength = 10;
+export const defaultCharsets = [Charset.Lowercase, Charset.Uppercase, Charset.Digits, Charset.Symbols];
+
 export const generate = (length: number, charsets: string[]) => {
   const charset = charsets.join("");
   let result = "";

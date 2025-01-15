@@ -1,6 +1,12 @@
 <script lang="ts">
   import Card from "./Card.svelte";
-  import { Charset, generate, type CharsetType } from "./generate";
+  import {
+    Charset,
+    defaultCharsets,
+    defaultLength,
+    generate,
+    type CharsetType,
+  } from "./generate";
   import checkIcon from "../assets/check.svg?raw";
   import copyIcon from "../assets/copy.svg?raw";
 
@@ -20,15 +26,8 @@
     options.filter((o) => o.enabled).map((o) => Charset[o.type]),
   );
 
-  let length = $state(10);
-  let pw = $state(
-    generate(10, [
-      Charset.Lowercase,
-      Charset.Uppercase,
-      Charset.Digits,
-      Charset.Symbols,
-    ]),
-  );
+  let length = $state(defaultLength);
+  let pw = $state(generate(defaultLength, defaultCharsets));
   let copied = $state(false);
   const handleGenerate = () => {
     pw = generate(length, charsets);
