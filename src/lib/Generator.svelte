@@ -4,7 +4,9 @@
     Charset,
     defaultCharsets,
     defaultLength,
+    evaluate,
     generate,
+    Strength,
     type CharsetType,
   } from "./generate";
   import checkIcon from "../assets/check.svg?raw";
@@ -28,9 +30,12 @@
 
   let length = $state(defaultLength);
   let pw = $state(generate(defaultLength, defaultCharsets));
+  let strength = $state(evaluate(defaultLength, defaultCharsets));
   let copied = $state(false);
+
   const handleGenerate = () => {
     pw = generate(length, charsets);
+    strength = evaluate(length, charsets);
     copied = false;
   };
 
@@ -41,7 +46,13 @@
 </script>
 
 <Card
-  class="border-secondary flex flex-row items-center justify-between gap-2 rounded-b-none border-b-8 "
+  class={[
+    "flex flex-row items-center justify-between gap-2 rounded-b-none border-b-8",
+    strength === Strength.VeryWeak && "border-error",
+    strength === Strength.Weak && "border-warning",
+    strength === Strength.Strong && "border-info",
+    strength === Strength.VeryStrong && "border-success",
+  ]}
 >
   <p class="prose prose-lg break-all font-mono">{pw}</p>
   <button
@@ -81,7 +92,7 @@
     <label class="label cursor-pointer gap-1">
       <span class="label-text">{type}</span>
       <input
-        class="checkbox checkbox-secondary"
+        class="checkbox-secondary checkbox"
         type="checkbox"
         checked={enabled}
         onchange={() => {
