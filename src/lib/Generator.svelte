@@ -58,12 +58,14 @@
   <button
     class={["btn btn-circle btn-xs", copied && "hidden"]}
     onclick={handleCopy}
+    aria-label="Copy password"
   >
     {@html copyIcon}
   </button>
   <button
     class={["btn btn-circle btn-xs text-success", !copied && "hidden"]}
     onclick={handleCopy}
+    aria-label="Copy password"
   >
     {@html checkIcon}
   </button>
