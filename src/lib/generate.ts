@@ -7,15 +7,14 @@ export const Charset = {
 export type CharsetType = keyof typeof Charset;
 
 export const defaultLength = 20;
-export const defaultCharsets = [
+export const defaultCharset = [
   Charset.Lowercase,
   Charset.Uppercase,
   Charset.Digits,
   Charset.Symbols,
-];
+].join("");
 
-export const generate = (length: number, charsets: string[]) => {
-  const charset = charsets.join("");
+export const generate = (length: number, charset: string) => {
   let result = "";
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * charset.length);
@@ -32,8 +31,8 @@ export const Strength = {
 } as const;
 export type Strength = (typeof Strength)[keyof typeof Strength];
 
-export const evaluate = (length: number, charsets: string[]): Strength => {
-  const entropy = getEntropy(length, charsets);
+export const evaluate = (length: number, charset: string): Strength => {
+  const entropy = getEntropy(length, charset);
   if (entropy < 36) {
     return Strength.VeryWeak;
   }
@@ -46,7 +45,6 @@ export const evaluate = (length: number, charsets: string[]): Strength => {
   return Strength.VeryStrong;
 };
 
-const getEntropy = (length: number, charsets: string[]) => {
-  const charset = charsets.join("");
+const getEntropy = (length: number, charset: string) => {
   return Math.log2(charset.length) * length;
 };

@@ -2,7 +2,7 @@
   import Card from "./Card.svelte";
   import {
     Charset,
-    defaultCharsets,
+    defaultCharset,
     defaultLength,
     evaluate,
     generate,
@@ -24,18 +24,21 @@
     { type: "Symbols", enabled: true },
   ]);
 
-  let charsets: string[] = $derived(
-    options.filter((o) => o.enabled).map((o) => Charset[o.type]),
+  let charset: string = $derived(
+    options
+      .filter((o) => o.enabled)
+      .map((o) => Charset[o.type])
+      .join(""),
   );
 
   let length = $state(defaultLength);
-  let pw = $state(generate(defaultLength, defaultCharsets));
-  let strength = $state(evaluate(defaultLength, defaultCharsets));
+  let pw = $state(generate(defaultLength, defaultCharset));
+  let strength = $state(evaluate(defaultLength, defaultCharset));
   let copied = $state(false);
 
   const handleGenerate = () => {
-    pw = generate(length, charsets);
-    strength = evaluate(length, charsets);
+    pw = generate(length, charset);
+    strength = evaluate(length, charset);
     copied = false;
   };
 
@@ -43,6 +46,17 @@
     navigator.clipboard.writeText(pw);
     copied = true;
   };
+
+  $effect(() => {
+    if (charset.length === 0) {
+      options = [
+        { type: "Lowercase", enabled: true },
+        { type: "Uppercase", enabled: false },
+        { type: "Digits", enabled: false },
+        { type: "Symbols", enabled: false },
+      ];
+    }
+  });
 </script>
 
 <Card
@@ -105,7 +119,6 @@
             return o;
           });
         }}
-        disabled={charsets.length === 1 && enabled}
       />
     </label>
   {/each}

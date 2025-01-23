@@ -10,6 +10,6 @@
   </div>
   <Generator />
   <p class="prose ml-auto mt-auto">
-    Made by <a href="https://github.com/miksin">@miksin</a>
+    Made by <a href="https://github.com/miksin/locky">@miksin</a>
   </p>
 </main>
