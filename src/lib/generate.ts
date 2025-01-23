@@ -2,7 +2,7 @@ export const Charset = {
   Lowercase: "abcdefghijklmnopqrstuvwxyz",
   Uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
   Digits: "0123456789",
-  Symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+  Symbols: "!@#$%^&*_+-=?",
 } as const;
 export type CharsetType = keyof typeof Charset;
 
