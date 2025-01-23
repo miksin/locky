@@ -6,6 +6,11 @@ export const Charset = {
 } as const;
 export type CharsetType = keyof typeof Charset;
 
+export type Option = {
+  type: CharsetType;
+  enabled: boolean;
+};
+
 export const defaultLength = 20;
 export const defaultCharset = [
   Charset.Lowercase,
