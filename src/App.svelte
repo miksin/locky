@@ -3,7 +3,9 @@
   import Logo from "./lib/Logo.svelte";
 </script>
 
-<main class="mx-auto flex min-h-dvh w-full max-w-96 flex-col gap-4 p-4 md:py-8">
+<main
+  class="max-w-128 mx-auto flex min-h-dvh w-full flex-col gap-4 p-4 md:py-8"
+>
   <div class="flex flex-col">
     <Logo />
     <h3 class="prose-l prose">Password Generator</h3>
